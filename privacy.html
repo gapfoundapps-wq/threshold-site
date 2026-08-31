@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Threshold — Privacy Policy</title>
+<meta name="description" content="Threshold collects no data and shares no data. Everything stays on your device." />
+<style>
+  :root { --bg:#FAF9F6; --ink:#17211B; --muted:#6B7A72; --faint:#9AA69F;
+          --border:#E3DFD7; --accent:#2E5D50; --surface:#fff; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); line-height:1.55;
+         font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 40px 20px 80px; }
+  h1 { font-size: 2rem; letter-spacing:-0.6px; margin: 0 0 4px; }
+  h2 { font-size: 1.15rem; margin: 32px 0 8px; }
+  h3 { font-size: 1rem; margin: 24px 0 6px; }
+  p { margin: 0 0 10px; }
+  ul { margin: 0 0 12px; padding-left: 20px; }
+  li { margin-bottom: 4px; }
+  code { background:#F1EFEA; padding:1px 5px; border-radius:4px; font-size:0.9em; }
+  hr { border:0; border-top:1px solid var(--border); margin: 28px 0; }
+  table { width:100%; border-collapse:collapse; margin: 8px 0 16px; font-size:0.94rem; }
+  th { text-align:left; color:var(--muted); font-weight:600;
+       border-bottom:1px solid var(--border); padding:6px 8px; }
+  td { padding:6px 8px; border-bottom:1px solid #F1EFEA; vertical-align:top; }
+  .banner { background:#E1F1EA; color:#14503B; border-radius:12px;
+            padding:14px 16px; font-weight:600; margin: 20px 0 28px; }
+  .meta { color:var(--faint); font-size:0.86rem; }
+  footer { margin-top:40px; padding-top:16px; border-top:1px solid var(--border);
+           color:var(--muted); font-size:0.86rem; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Threshold — Privacy Policy</h1>
+  <p class="meta">Last updated 2026-08-31 · applies to Threshold for iOS and Android (com.gapfound.threshold)</p>
+
+  <div class="banner">
+    Threshold collects no data and shares no data. There is no account, no server and no analytics.
+    Everything you record stays encrypted on your own phone.
+  </div>
+
+  <p>
+    This page is generated directly from the app's data inventory, which is kept in the source
+    repository and updated in the same commit as any change to how the app handles data. What
+    follows is that inventory, unedited.
+  </p>
+
+  <hr />
+
+<p><strong>Status: no data collected, no data shared.</strong> That statement is literally true, not a marketing position. There is no server to collect anything to.</p>
+<hr />
+<h2>What leaves the device</h2>
+<p>Nothing. Threshold has no backend, no account system, no login, no sync, and no analytics. The app makes no network requests of its own.</p>
+<p>The only outbound traffic the binary is capable of comes from the platform subscription SDK (RevenueCat), which talks to RevenueCat and the platform store to answer one question: is this install's subscription active. It is given an anonymous store-generated identifier and no owner data — no dog name, no encounters, no email, no device identifier we set.</p>
+<h2>What is stored on the device</h2>
+<table><thead>
+<tr><th>Item</th><th>Where</th><th>Encrypted</th><th>Leaves device</th></tr>
+</thead><tbody>
+<tr><td>Encounters (time, trigger, distance, response, recovery, optional note)</td><td>App private storage, one file</td><td>AES-256-GCM</td><td>Only if the owner exports a backup</td></tr>
+<tr><td>Dog name and settings</td><td>Same file</td><td>AES-256-GCM</td><td>Same</td></tr>
+<tr><td>Attached photos</td><td>App private storage</td><td>AES-256-GCM, same key</td><td>Same</td></tr>
+<tr><td>Document encryption key</td><td>iOS Keychain / Android Keystore</td><td>Protected by the OS</td><td>Never</td></tr>
+<tr><td>Backup passphrase</td><td>Not stored anywhere</td><td>n/a</td><td>Never</td></tr>
+</tbody></table>
+<p>The 256-bit document key is generated on the device on first launch, held in <code>expo-secure-store</code> with <code>WHEN_UNLOCKED_THIS_DEVICE_ONLY</code>, and never transmitted. Every write draws a fresh random 96-bit nonce.</p>
+<h2>Owner-initiated export</h2>
+<p>Two things can leave the device, both only when the owner chooses:</p>
+<ol>
+<li><strong>An encrypted backup file</strong>, protected by a passphrase the owner sets (scrypt N=2^15 → AES-256-GCM). Handed to the OS share sheet. We never see it, and we cannot open it — losing the passphrase means losing the file.</li>
+<li><strong>A PDF report</strong>, generated on the device and handed to the share sheet, for the owner to send to their trainer, behaviourist or vet.</li>
+</ol>
+<h2>Permissions</h2>
+<p>Verified against the generated <code>AndroidManifest.xml</code>, not just the config. Only these two are present in a build:</p>
+<table><thead>
+<tr><th>Permission</th><th>Why</th><th>User-facing</th></tr>
+</thead><tbody>
+<tr><td><code>INTERNET</code></td><td>The subscription SDK asking the store whether this install is subscribed. Nothing else makes a network request.</td><td>No prompt; not shown by Android</td></tr>
+<tr><td><code>READ_EXTERNAL_STORAGE</code> (max SDK 32)</td><td>Reading a photo the owner chose to attach</td><td>Prompted, and declinable — the app works fully without it</td></tr>
+</tbody></table>
+<p>Explicitly stripped via <code>blockedPermissions</code>, because the libraries we depend on would otherwise add them by default:</p>
+<p><code>ACCESS_FINE_LOCATION</code>, <code>ACCESS_COARSE_LOCATION</code>, <code>RECORD_AUDIO</code>, <code>SYSTEM_ALERT_WINDOW</code>, <code>WRITE_EXTERNAL_STORAGE</code>, <code>VIBRATE</code>, <code>CAMERA</code></p>
+<p><code>CAMERA</code> is contributed by expo-image-picker. The app only ever opens the photo library, never the camera, so it is removed and the iOS camera usage string is not declared either.</p>
+<p>A few normal-level permissions arrive from transitive Android libraries rather than from our configuration - <code>ACCESS_NETWORK_STATE</code>, and the biometric pair <code>USE_BIOMETRIC</code> / <code>USE_FINGERPRINT</code> that comes with the OS keystore integration behind expo-secure-store. None is a runtime-prompted permission, none grants access to personal data, and none is used to collect anything.</p>
+<p>No location, no microphone, no contacts, no camera roll scanning, no background access, no notifications, no draw-over-other-apps.</p>
+<p>On iOS the only permission string declared is <code>NSPhotoLibraryUsageDescription</code>. The config plugins would otherwise add <code>NSCameraUsageDescription</code>, <code>NSMicrophoneUsageDescription</code> and <code>NSFaceIDUsageDescription</code> by default, so each is explicitly disabled (<code>cameraPermission: false</code>, <code>microphonePermission: false</code>, <code>faceIDPermission: false</code>), which deletes the key rather than leaving a prompt the app would never show. The app never opens the camera, never records audio, and never gates the keystore behind biometrics.</p>
+<h2>Updates, and what survives</h2>
+<p>An app update replaces the code, never the stored data. The key alias (<code>threshold.document.key.v1</code>) and the filename (<code>threshold.enc</code>) are fixed, the envelope format is unchanged, and nothing in the startup path deletes anything - erasing is reachable only from the owner tapping &quot;Erase all data on this device&quot;. Tests cover a document written by one version being read whole by the next, including fields a newer version added.</p>
+<p>What DOES lose records, by design:</p>
+<ul>
+<li><strong>Deleting the app.</strong> The container goes with it.</li>
+<li><strong>Restoring the phone from a backup.</strong> The document key is stored <code>WHEN_UNLOCKED_THIS_DEVICE_ONLY</code>, so it is deliberately excluded from iCloud and iTunes backups and never leaves the device. A restored copy of the encrypted file has no key to open it. On Android the same holds: the expo-secure-store backup rules keep the keystore entry out of auto-backup, so a restored file cannot be opened either.</li>
+<li><strong>Moving to a new phone.</strong></li>
+</ul>
+<p>That is the cost of the privacy promise: because we hold no copy and the key never leaves the device, only the owner's own encrypted export can move records between installs. Onboarding says so on first launch, and it is the reason export exists.</p>
+<h2>Not present in this app</h2>
+<ul>
+<li>No analytics SDK (no Firebase, Amplitude, Segment, Mixpanel, or equivalent)</li>
+<li>No crash reporting (no Sentry, Crashlytics, Bugsnag)</li>
+<li>No advertising SDK, no ad identifiers, no attribution SDK</li>
+<li>No tracking as defined by Apple's App Tracking Transparency — the app never presents the ATT prompt because it has nothing to ask for</li>
+<li>No third-party fonts, tag managers or remote configuration</li>
+<li>No Play Integrity API and no App Attest. Both exist so a <em>server</em> can refuse requests from tampered clients. There is no server, so they would protect nothing and would add a dependency for show.</li>
+</ul>
+<h2>Store form answers</h2>
+<p><strong>Apple — App Privacy:</strong> Data Not Collected. <code>PrivacyInfo.xcprivacy</code> declares <code>NSPrivacyTracking: false</code>, no tracking domains, no collected data types, and required-reason API declarations only (file timestamp <code>C617.1</code>, disk space <code>E174.1</code>, user defaults <code>CA92.1</code>).</p>
+<p><strong>Google Play — Data safety:</strong> &quot;No data collected&quot; and &quot;No data shared&quot;. Data is encrypted at rest. There is no account, therefore no account deletion flow is required; Settings offers &quot;Erase all data on this device&quot;, which deletes every record and destroys the encryption key.</p>
+<h2>Account deletion</h2>
+<p>There are no accounts, so there is nothing to delete server-side. In-app, Settings → Erase all data on this device removes every encounter, photo and setting and destroys the document key. It cannot be undone and we hold no copy.</p>
+<h2>Age rating</h2>
+<p>18+ / adults only. The app is aimed at dog owners managing a behaviour programme. It contains no user-generated content sharing, no social features, no chat, and no purchasable content other than the subscription.</p>
+
+  <footer>
+    Questions about privacy: <a href="mailto:gapfound.apps@gmail.com">gapfound.apps@gmail.com</a><br />
+    Threshold reports what you recorded. It does not diagnose anything, does not recommend treatment
+    or medication, and is not a substitute for advice from your trainer, behaviourist or vet.
+  </footer>
+</div>
+</body>
+</html>
